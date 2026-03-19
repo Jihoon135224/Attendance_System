@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>참여 현황</title>
+
+  <style>
+    body {
+      background-image: url("{{ url_for('static', filename='backgrounds/index_cute_background.jpg') }}");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center top;
+      background-attachment: fixed;
+      margin: 0;
+      padding: 50px;
+      font-family: Arial, sans-serif;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #333;
+      background-color: rgba(255, 255, 255, 0.7);
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .booth-status {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .booth {
+      width: 150px;
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.5);
+      padding: 10px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: 0.3s;
+    }
+
+    .booth:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+
+    .booth img {
+      width: 100%;
+      border-radius: 10px;
+      background: none;
+      transition: 0.3s ease;
+    }
+
+    .booth img.grayscale {
+      filter: grayscale(100%);
+      opacity: 0.7;
+    }
+
+    .booth-name {
+      margin-top: 10px;
+      font-weight: bold;
+      background-color: rgba(255, 255, 255, 0.7);
+      border-radius: 5px;
+      padding: 5px;
+      font-size: 16px;
+    }
+
+    .logout-btn {
+      display: block;
+      margin: 30px auto 0;
+      padding: 12px 25px;
+      background-color: #ff6f61;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: background-color 0.3s;
+    }
+
+    .logout-btn:hover {
+      background-color: #ff3d33;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        background-size: 150%;
+        background-position: top center;
+      }
+    }
+
+    @media (min-width: 1920px) {
+      body {
+        background-size: 80%;
+        background-position: top center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>참여 현황</h1>
+<h2>{{ student_name }}님</h2>
+
+<div class="booth-status">
+  {% for booth, status in booth_status.items() %}
+    <div class="booth">
+      <img src="{{ url_for('static', filename='stamps/' + booth + '.png') }}"
+           class="{% if status == '미참여' %}grayscale{% endif %}"
+           alt="{{ booth }}">
+      <div class="booth-name">
+        {{ booth_display_names[booth] if booth in booth_display_names else booth }}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<a href="{{ url_for('logout') }}" class="logout-btn">로그아웃</a>
+
+</body>
+</html>

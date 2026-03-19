@@ -1,0 +1,42 @@
+/* 기본적인 스타일링 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+/* 헤더 스타일 */
+header {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+    font-size: 24px;
+}
+
+/* 부스 상태 표 스타일 */
+.booth-status {
+    margin: 20px;
+    display: flex;
+    justify-content: space-around;
+    font-size: 18px;
+}
+
+.booth {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.booth.participated {
+    background-color: #28a745;  /* 참여한 부스는 녹색 */
+    color: white;
+}
+
+.booth.not-participated {
+    background-color: #dc3545;  /* 미참여 부스는 빨간색 */
+    color: white;
+}

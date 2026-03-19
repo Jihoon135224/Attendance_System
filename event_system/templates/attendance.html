@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ booth_display_name }} 출석 페이지</title>
+    <script src="{{ url_for('static', filename='js/html5-qrcode.min.js') }}"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        #reader {
+            width: 300px;
+            margin: 30px auto;
+        }
+        .scanned-list {
+            margin-top: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+            max-height: 300px;
+            overflow-y: auto;
+            text-align: left;
+            font-size: 16px;
+        }
+        .top-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .top-buttons a {
+            margin-left: 10px;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .top-buttons a:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-buttons">
+    <a href="{{ url_for('booth_page', booth_name=booth_name) }}">참여도장</a>
+</div>
+
+<h1>{{ booth_display_name }} 출석 페이지</h1>
+<p>QR 코드를 스캔하여 출석을 완료해주세요!</p>
+
+<div id="reader"></div>
+
+<h2>찍은 학생 리스트</h2>
+<div class="scanned-list" id="scanned-list"></div>
+
+<script>
+let endpoint = "{{ '/stamp_attendance1' if mode == 'attendance1' else '/stamp_attendance2' }}";
+
+const html5QrcodeScanner = new Html5QrcodeScanner(
+    "reader", { fps: 10, qrbox: 250 }
+);
+
+html5QrcodeScanner.render((decodedText, decodedResult) => {
+    fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ student_id: decodedText })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => { throw new Error(err.error || '알 수 없는 에러 발생'); });
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert(data.message);
+        addToScannedList(decodedText);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('오류: ' + error.message);
+    });
+});
+
+function addToScannedList(student_id) {
+    const list = document.getElementById('scanned-list');
+    const now = new Date().toLocaleTimeString();
+    const entry = document.createElement('div');
+    entry.innerText = `학생 ID: ${student_id} | 시간: ${now}`;
+    list.prepend(entry);
+}
+</script>
+
+</body>
+</html>
